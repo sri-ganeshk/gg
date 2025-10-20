@@ -1,21 +1,23 @@
+/* Global app styles using custom color palette */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  background-color: #F5EFE6; /* cream-200 */
+  min-height: 100vh;
 }
 
+/* Logo and branding */
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em #6D94C5aa); /* blue-500 with alpha */
 }
+
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em #CBDCEB); /* sky-200 */
 }
 
 @keyframes logo-spin {
@@ -33,10 +35,34 @@
   }
 }
 
+/* Card components */
 .card {
   padding: 2em;
+  background-color: #FEFCF8; /* cream-50 */
+  border: 1px solid #D6C9A6; /* beige-400 */
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(109, 148, 197, 0.1); /* blue-500 shadow */
 }
 
+/* Text styles */
 .read-the-docs {
-  color: #888;
+  color: #9E8D5E; /* beige-800 */
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #E8DFCA; /* beige-200 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6D94C5; /* blue-500 */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5B7FB5; /* blue-600 */
 }

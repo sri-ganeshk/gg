@@ -1,111 +1,98 @@
-import { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../store/authStore';
+import React from 'react';
+import { useAuthForm } from '../hooks/useAuthForm';
+import InputField from '../components/common/InputField';
+import Button from '../components/common/Button';
+import ErrorMessage from '../components/common/ErrorMessage';
 
 const Login = () => {
-  const navigate = useNavigate();
-  const { login, setLoading, loading } = useAuthStore();
-  const [isRegister, setIsRegister] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
-  const { email, password } = formData;
-
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    try {
-      const endpoint = isRegister ? 'register' : 'login';
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/${endpoint}`, { 
-        email, 
-        password 
-      });
-      
-      console.log(res.data);
-      
-      login(res.data.token, res.data.user);
-      
-      navigate('/dashboard');
-    } catch (err) {
-      console.error(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    isRegisterMode,
+    formData,
+    errors,
+    loading,
+    handleInputChange,
+    handleSubmit,
+    toggleMode
+  } = useAuthForm();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-cream-200 px-4">
       <div className="w-full max-w-md">
         <form
-          className="bg-white rounded-lg p-8 space-y-6"
-          onSubmit={onSubmit}
+          className="bg-cream-50 rounded-xl p-8 space-y-6 shadow-lg border-2 border-beige-300"
+          onSubmit={handleSubmit}
+          noValidate
         >
-          <h1 className="text-3xl font-light text-center text-gray-900">
-            {isRegister ? 'Register' : 'Login'}
-          </h1>
+          <header className="text-center">
+            <div className="bg-blue-500 text-cream-50 p-4 rounded-xl font-bold text-2xl mb-4 mx-auto w-16 h-16 flex items-center justify-center">
+              GG
+            </div>
+            <h1 className="text-3xl font-bold text-blue-900">
+              {isRegisterMode ? 'Create Account' : 'Welcome Back'}
+            </h1>
+            <p className="mt-3 text-beige-800 text-lg">
+              {isRegisterMode 
+                ? 'Join us to start creating courses' 
+                : 'Sign in to your account'
+              }
+            </p>
+          </header>
           
-          <div className="space-y-4">
-            <div>
-              <label
-                className="block text-sm text-gray-600 mb-1"
-                htmlFor="email"
-              >
-                Email
-              </label>
-              <input
-                className="w-full px-3 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                name="email"
-                value={email}
-                onChange={onChange}
-                required
-              />
+          {/* Submit Error */}
+          {errors.submit && (
+            <div className="bg-blue-100 border-2 border-blue-300 rounded-lg p-4">
+              <p className="text-sm text-blue-800 font-medium">{errors.submit}</p>
             </div>
+          )}
+
+          <div className="space-y-5">
+            <InputField
+              id="email"
+              name="email"
+              type="email"
+              label="Email Address"
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleInputChange}
+              error={errors.email}
+              required
+              autoComplete="email"
+            />
             
-            <div>
-              <label
-                className="block text-sm text-gray-600 mb-1"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <input
-                className="w-full px-3 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                name="password"
-                value={password}
-                onChange={onChange}
-                required
-              />
-            </div>
+            <InputField
+              id="password"
+              name="password"
+              type="password"
+              label="Password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleInputChange}
+              error={errors.password}
+              required
+              autoComplete={isRegisterMode ? 'new-password' : 'current-password'}
+            />
           </div>
 
-          <div className="space-y-4">
-            <button
-              className="w-full bg-gray-900 text-white py-3 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          <div className="space-y-4 pt-2">
+            <Button
               type="submit"
+              variant="primary"
+              size="medium"
+              loading={loading}
               disabled={loading}
+              className="w-full"
+              loadingText={isRegisterMode ? 'Creating Account...' : 'Signing In...'}
             >
-              {loading ? 'Loading...' : (isRegister ? 'Create Account' : 'Sign In')}
-            </button>
+              {isRegisterMode ? 'Create Account' : 'Sign In'}
+            </Button>
             
             <button
               type="button"
-              className="w-full text-sm text-gray-600 hover:text-gray-900 transition-colors"
-              onClick={() => setIsRegister(!isRegister)}
+              className="w-full text-sm text-blue-700 hover:text-blue-800 transition-colors focus:outline-none focus:underline bg-beige-200 py-3 rounded-lg hover:bg-beige-300 font-medium"
+              onClick={toggleMode}
+              disabled={loading}
             >
-              {isRegister
+              {isRegisterMode
                 ? 'Already have an account? Sign in'
                 : "Don't have an account? Create one"}
             </button>

@@ -7,18 +7,18 @@ import Upload from './pages/Upload';
 
 function App() {
   return (
-    <>
+    <div className="min-h-screen bg-cream-200">
       <Navbar />
-      <Routes>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/course" element={<Course />} />
-        <Route path="/upload" element={<Upload />} />
-        <Route path="/course/:id" element={<Course  />} />
-        {/* <Route path="/course/:id/qna" element={<Qna />} />
-        <Route path="/course/:id/flashCards" element={<FlashCards />} /> */}
-      </Routes>
-    </>
+      <main className="pb-8">
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/course" element={<Course />} />
+          <Route path="/upload" element={<Upload />} />
+          <Route path="/course/:id" element={<Course  />} />
+        </Routes>
+      </main>
+    </div>
   );
 }
 

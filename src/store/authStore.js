@@ -1,84 +1,104 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-const useAuthStore = create(
-  persist(
-    (set, get) => ({
-      // Auth State
+/**
+ * Auth store slices for better organization
+ */
+
+// Auth slice
+const createAuthSlice = (set, get) => ({
+  // Auth State
+  isAuthenticated: false,
+  token: null,
+  user: null,
+  loading: false,
+
+  // Auth Actions
+  login: (token, userData = null) => {
+    localStorage.setItem('token', token);
+    set({
+      isAuthenticated: true,
+      token,
+      user: userData,
+    });
+  },
+
+  logout: () => {
+    localStorage.removeItem('token');
+    set({
       isAuthenticated: false,
       token: null,
       user: null,
-      loading: false,
+      courses: [], // Clear courses on logout
+    });
+  },
 
-      // Upload State
-      uploadLoading: false,
-      uploadError: null,
-      uploadSuccess: null,
+  setLoading: (loading) => set({ loading }),
 
-      // Courses State
-      courses: [],
-      coursesLoading: false,
-      coursesError: null,
+  // Initialize auth state from localStorage
+  initializeAuth: () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      set({
+        isAuthenticated: true,
+        token,
+      });
+    }
+  },
 
-      // Auth Actions
-      login: (token, userData = null) => {
-        localStorage.setItem('token', token);
-        set({
-          isAuthenticated: true,
-          token,
-          user: userData,
-        });
-      },
+  // Check if user is authenticated
+  checkAuth: () => {
+    const { token } = get();
+    return !!token && !!localStorage.getItem('token');
+  },
 
-      logout: () => {
-        localStorage.removeItem('token');
-        set({
-          isAuthenticated: false,
-          token: null,
-          user: null,
-          courses: [], // Clear courses on logout
-        });
-      },
+  // Get auth token
+  getToken: () => {
+    const { token } = get();
+    return token || localStorage.getItem('token');
+  }
+});
 
-      setLoading: (loading) => set({ loading }),
+// Upload slice
+const createUploadSlice = (set) => ({
+  // Upload State
+  uploadLoading: false,
+  uploadError: null,
+  uploadSuccess: null,
 
-      // Initialize auth state from localStorage
-      initializeAuth: () => {
-        const token = localStorage.getItem('token');
-        if (token) {
-          set({
-            isAuthenticated: true,
-            token,
-          });
-        }
-      },
+  // Upload Actions
+  setUploadLoading: (loading) => set({ uploadLoading: loading }),
+  setUploadError: (error) => set({ uploadError: error }),
+  setUploadSuccess: (success) => set({ uploadSuccess: success }),
+  clearUploadMessages: () => set({ uploadError: null, uploadSuccess: null })
+});
 
-      // Check if user is authenticated
-      checkAuth: () => {
-        const { token } = get();
-        return !!token && !!localStorage.getItem('token');
-      },
+// Courses slice
+const createCoursesSlice = (set) => ({
+  // Courses State
+  courses: [],
+  coursesLoading: false,
+  coursesError: null,
 
-      // Get auth token
-      getToken: () => {
-        const { token } = get();
-        return token || localStorage.getItem('token');
-      },
+  // Courses Actions
+  setCourses: (courses) => set({ courses }),
+  setCoursesLoading: (loading) => set({ coursesLoading: loading }),
+  setCoursesError: (error) => set({ coursesError: error }),
+  addCourse: (course) => set((state) => ({ 
+    courses: [...state.courses, course] 
+  })),
+  clearCoursesError: () => set({ coursesError: null })
+});
 
-      // Upload Actions
-      setUploadLoading: (loading) => set({ uploadLoading: loading }),
-      setUploadError: (error) => set({ uploadError: error }),
-      setUploadSuccess: (success) => set({ uploadSuccess: success }),
-      clearUploadMessages: () => set({ uploadError: null, uploadSuccess: null }),
-
-      // Courses Actions
-      setCourses: (courses) => set({ courses }),
-      setCoursesLoading: (loading) => set({ coursesLoading: loading }),
-      setCoursesError: (error) => set({ coursesError: error }),
-      addCourse: (course) => set((state) => ({ 
-        courses: [...state.courses, course] 
-      })),
-      clearCoursesError: () => set({ coursesError: null }),
+/**
+ * Main auth store combining all slices
+ */
+const useAuthStore = create(
+  persist(
+    (set, get) => ({
+      ...createAuthSlice(set, get),
+      ...createUploadSlice(set),
+      ...createCoursesSlice(set)
     }),
     {
       name: 'auth-storage', // unique name for localStorage key

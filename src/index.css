@@ -1,1 +1,60 @@
 @import "tailwindcss";
+
+/* Global base styles using custom color palette */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #F5EFE6; /* cream-200 */
+  color: #2B4382; /* blue-900 */
+  line-height: 1.6;
+}
+
+/* Default link styles */
+a {
+  color: #5B7FB5; /* blue-600 */
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #4A6BA5; /* blue-700 */
+}
+
+/* Focus styles for accessibility */
+*:focus {
+  outline: 2px solid #6D94C5; /* blue-500 */
+  outline-offset: 2px;
+}
+
+/* 3D Flip Card Styles */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Custom selection styles */
+::selection {
+  background-color: #CBDCEB; /* sky-200 */
+  color: #2B4382; /* blue-900 */
+}
